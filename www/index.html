@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+  </head>
+ <body ng-app="app">
+
+<ion-nav-bar class="bar-positive">
+<ion-nav-back-button></ion-nav-back-button>
+</ion-nav-bar>
+<ion-nav-view></ion-nav-view>
+
+<script id="templates/menu.html" type="text/ng-template">
+ <ion-side-menus>
+
+ <!-- Main Content -->
+ <ion-side-menu-content>
+  <ion-nav-bar class="bar-positive">
+   <ion-nav-back-button>
+   </ion-nav-back-button>
+
+   <ion-nav-buttons side="left">
+     <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+     </button>
+   </ion-nav-buttons>
+ </ion-nav-bar>
+ <ion-nav-view name="menuContent"></ion-nav-view>
+ </ion-side-menu-content>
+
+ <!-- Left Side Menu -->
+ <ion-side-menu side="left">
+  <ion-header-bar class="bar-stable">
+    <h1 class="title">Left</h1>
+  </ion-header-bar>
+  <ion-content>
+    <ion-list>
+      <ion-item menu-close href="#/app/start">
+        Início
+      </ion-item>
+      <ion-item menu-close href="#/app/my_recipes">
+        Minhas receitas
+      </ion-item>
+      <ion-item menu-close href="#/app/prefs">
+        Minhas preferências
+      </ion-item>
+      <ion-item menu-close href="#/app/about">
+        Sobre o programa
+      </ion-item>
+    </ion-list>
+  </ion-content>
+ </ion-side-menu>
+ 
+ </ion-side-menus>
+</script>
+
+<script id="templates/start.html" type="text/ng-template">
+ <ion-view view-title="Início">
+      <ion-content class="padding">
+        <div class="list list-inset">
+          <label class="item item-input">
+            <input type="text" placeholder="Quais ingredientes você tem?" ng-model="data.ingredients">
+        <button class="button button-positive icon ion-mic-a" on-hold="hold()" on-release="release()"></button>
+          </label>
+          <button class="button button-positive button-full" ng-click="search()">Buscar</button>
+        </div>
+      </ion-content>
+ </ion-view>
+</script>
+
+<script id="templates/search_results.html" type="text/ng-template">
+ <ion-view view-title="Resultado da busca">
+   <ion-content>
+     <h1>Receitas encontradas</h1>
+   </ion-content>
+ </ion-view>
+</script>
+
+<script id="templates/my_recipes.html" type="text/ng-template">
+ <ion-view view-title="Minhas receitas">
+   <ion-content>
+     <h1>Minhas receitas salvas</h1>
+   </ion-content>
+ </ion-view>
+</script>
+
+<script id="templates/prefs.html" type="text/ng-template">
+ <ion-view view-title="Minhas preferências">
+   <ion-content>
+     <h1>Preferências</h1>
+   </ion-content>
+ </ion-view>
+</script>
+
+<script id="templates/about.html" type="text/ng-template">
+ <ion-view view-title="Sobre o programa">
+   <ion-content>
+     <h1>Sobre</h1>
+   </ion-content>
+ </ion-view>
+</script>
+
+</body>
+</html>
