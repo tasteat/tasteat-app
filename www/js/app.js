@@ -1,4 +1,4 @@
-angular.module('app', ['ionic'])
+angular.module('app', ['ionic', 'pascalprecht.translate'])
 
   .controller('StartCtrl', function ($scope) {
     $scope.data = {'ingredients': ''};
@@ -86,4 +86,14 @@ angular.module('app', ['ionic'])
    });
  // If none of the above states are matched, use this as the fallback:
  $urlRouterProvider.otherwise('/app/start');
+})
+
+.config(function ($translateProvider) {
+
+  $translateProvider.useStaticFilesLoader({
+    prefix: 'locale/',
+    suffix: '.json'
+  });
+  $translateProvider.useSanitizeValueStrategy('escape');
+  $translateProvider.determinePreferredLanguage();
 })
