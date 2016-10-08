@@ -1,15 +1,13 @@
 angular.module('app', ['ionic', 'pascalprecht.translate'])
 
-  .controller('StartCtrl', function ($scope) {
-    $scope.data = {'ingredients': ''};
+  .controller('StartCtrl', ['$translate', '$scope', 'FormData', '$state', function ($translate, $scope, FormData, $state) {
+    $scope.data = {'searchString': ''};
 
     document.addEventListener("deviceready", function () {
-      //console.log('criando speech');
       $scope.recognition = new SpeechRecognition();
       $scope.recognition.onresult = function (event) {
-        //console.log('onresult recebido');
         if (event.results.length > 0) {
-          $scope.data.ingredients = event.results[0][0].transcript;
+          $scope.data.searchString = event.results[0][0].transcript;
           $scope.$apply();
         }
       };
@@ -17,22 +15,30 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
 
     $scope.hold = function () {
       $scope.isOnHold = true;
-      //console.log('hold');
       $scope.recognition.start();
     }
     $scope.release = function () {
       if (!$scope.isOnHold)
         return;
-     // console.log('release');
       $scope.recognition.stop();
     }
   
     $scope.search = function() {
-      console.log($scope.data.ingredients);
+      searchData = {'lang': $translate.use(),
+                    'fullText': $scope.data.searchString}
+      FormData.updateForm(searchData);
+      $state.go('app.search_results');
     }
-})
+}])
 
-.controller('ResultsCtrl', function ($scope) {
+.controller('ResultsCtrl', function ($scope, FormData, Recipe, $ionicLoading) {
+  searchData = FormData.getForm();
+  $ionicLoading.show();
+  Recipe.getRecipes(searchData)
+    .then(function(response) {
+        $scope.recipes = response.recipes;
+        $ionicLoading.hide();
+    });
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -96,4 +102,4 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
   });
   $translateProvider.useSanitizeValueStrategy('escape');
   $translateProvider.determinePreferredLanguage();
-})
+});

@@ -23,6 +23,7 @@
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
+    <script src="js/services.js"></script>
   </head>
  <body ng-app="app">
 
@@ -71,7 +72,7 @@
       <ion-content class="padding">
         <div class="list list-inset">
           <label class="item item-input">
-            <input type="text" placeholder="{{ 'INGREDIENTS_PLACEHOLDER' | translate }}" ng-model="data.ingredients">
+            <input type="text" placeholder="{{ 'INGREDIENTS_PLACEHOLDER' | translate }}" ng-model="data.searchString">
         <button class="button button-positive icon ion-mic-a" on-hold="hold()" on-release="release()"></button>
           </label>
           <button class="button button-positive button-full" ng-click="search()" translate>FIND_BUTTON</button>
@@ -84,6 +85,12 @@
  <ion-view view-title="{{ 'SEARCH_RESULT_TITLE' | translate }}">
    <ion-content>
      <h1>{{ 'SEARCH_RESULT_TITLE' | translate }}</h1>
+     <ion-list>
+       <ion-item ng-repeat="recipe in recipes" class="item-text-wrap">
+         {{ recipe.title }}
+       </ion-item>
+     </ion-list>
+
    </ion-content>
  </ion-view>
 </script>
