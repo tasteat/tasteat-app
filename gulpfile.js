@@ -49,3 +49,17 @@ gulp.task('git-check', function(done) {
   }
   done();
 });
+
+var preprocess = require('gulp-preprocess');
+
+gulp.task('dev', function() {
+  gulp.src('./templates/app-settings.js')
+    .pipe(preprocess({context: {NODE_ENV: 'DEVELOPMENT', DEBUG: true}}))
+    .pipe(gulp.dest('./www/js/'));
+});
+
+gulp.task('prod', function() {
+  gulp.src('./templates/app-settings.js')
+    .pipe(preprocess({context: {NODE_ENV: 'PRODUCTION'}}))
+    .pipe(gulp.dest('./www/js/'));
+});

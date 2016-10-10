@@ -7,7 +7,8 @@ angular.module('app')
 .factory('Recipe', function($http) {
  return {
    getRecipes: function(searchData) {
-     return $http.get('http://192.168.0.102:5000/api/recipes?fullText=' + searchData.fullText)
+     var url = AppSettings.baseApiUrl + '/api/recipes?fullText=' + searchData.fullText;
+     return $http.get(url)
        .then(function (response) {
          return response.data;
        }, function (response) {
