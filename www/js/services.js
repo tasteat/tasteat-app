@@ -7,8 +7,10 @@ angular.module('app')
 .factory('Recipe', function($http) {
  return {
    getRecipes: function(searchData) {
-     var url = AppSettings.baseApiUrl + '/api/recipes?fullText=' + searchData.fullText;
-     return $http.get(url)
+     var url = AppSettings.baseApiUrl + '/api/recipes';
+     return $http.get(url, {
+       params: searchData
+     })
        .then(function (response) {
          return response.data;
        }, function (response) {
