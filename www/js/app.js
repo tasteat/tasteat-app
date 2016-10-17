@@ -31,14 +31,25 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
     }
 }])
 
-.controller('ResultsCtrl', function ($scope, FormData, Recipe, $ionicLoading) {
+.controller('ResultsCtrl', function ($scope, FormData, Recipe, $ionicLoading, $state) {
   searchData = FormData.getForm();
   $ionicLoading.show();
+  
   Recipe.getRecipes(searchData)
     .then(function(response) {
         $scope.recipes = response.recipes;
         $ionicLoading.hide();
-    });
+  });
+  
+  $scope.select_recipe = function(index) {
+	  console.log('index = ' + index);
+	  $state.go('app.show_recipe', {obj : $scope.recipes[index]});
+  }
+})
+
+.controller('RecipeCtrl', function ($scope, $stateParams) {
+	console.log('stateParams = ' + $stateParams);
+	$scope.recipe = $stateParams.obj;
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -63,6 +74,18 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
        'menuContent': {
          templateUrl: "templates/search_results.html",
          controller: 'ResultsCtrl'
+       }
+     }
+   })
+.state('app.show_recipe', {
+     url: "/show_recipe",
+     params: {
+    	obj: null 
+     },
+     views: {
+       'menuContent': {
+         templateUrl: "templates/show_recipe.html",
+         controller: 'RecipeCtrl'
        }
      }
    })
