@@ -1,11 +1,19 @@
 {
 	"START_TITLE": "Start",
+	"INGREDIENTS": "Ingredients",
 	"INGREDIENTS_PLACEHOLDER": "What ingredients do you have?",
 	"FIND_BUTTON": "Search",
 	"MENU_TITLE": "Menu",
+	"RECIPES": "Recipes",
+	"RESULTS": "Results",
+	"DIRECTIONS": "Directions",
 	"MY_RECIPES": "My recipes",
+	"COOK_TIME": "Cook Time",
+	"SERVINGS": "Servings",
+	"FILTERS": "Filters",
 	"SEARCH_RESULT_TITLE": "Search results",
 	"MY_PREFS": "My preferences",
+	"VIEWING_RECIPE": "Viewing Recipe",
 	"ABOUT": "About the program"
 }
 
