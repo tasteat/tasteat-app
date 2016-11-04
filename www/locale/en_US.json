@@ -14,6 +14,9 @@
 	"SEARCH_RESULT_TITLE": "Search results",
 	"MY_PREFS": "My preferences",
 	"VIEWING_RECIPE": "Viewing Recipe",
-	"ABOUT": "About the program"
+	"ABOUT": "About the program",
+	"RECIPE_CATEGORY_FILTER_TITLE": "Category",
+	"TOTAL_TIME_CATEGORY_FILTER_TITLE": "Cook Time",
+	"SERVINGS_FILTER_TITLE": "Servings"
 }
 
