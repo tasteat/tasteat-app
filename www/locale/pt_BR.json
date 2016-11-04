@@ -14,6 +14,9 @@
 	"SEARCH_RESULT_TITLE": "Resultados da busca",
 	"MY_PREFS": "Minhas preferências",
 	"VIEWING_RECIPE": "Visualizando Receita",
-	"ABOUT": "Sobre o programa"
+	"ABOUT": "Sobre o programa",
+	"RECIPE_CATEGORY_FILTER_TITLE": "Categoria",
+	"TOTAL_TIME_CATEGORY_FILTER_TITLE": "Tempo de Preparo",
+	"SERVINGS_FILTER_TITLE": "Para quantos"
 }
 

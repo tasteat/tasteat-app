@@ -31,14 +31,28 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
     }
 }])
 
-.controller('ResultsCtrl', function ($scope, FormData, Recipe, $ionicLoading, $state) {
+.controller('ResultsCtrl', function ($scope, filterFilter, FormData, Recipe, $ionicLoading, $state) {
   searchData = FormData.getForm();
   $ionicLoading.show();
+  data = {'lang': 'pt_BR'};
+  console.log('data = ' + JSON.stringify(data));
+  
+  Recipe.getFilters(data)
+    .then(function(response) {
+      try {
+        $scope.recipe_categories = response.recipe_categories;
+        $scope.total_time_categories = response.total_time_categories;
+      } catch(err) {
+        console.log(err);
+        $scope.recipe_categories = [];
+      }
+  });
   
   Recipe.getRecipes(searchData)
     .then(function(response) {
       try {
         $scope.recipes = response.recipes;
+        $scope.filtered_recipes = response.recipes;
       } catch(err) {
         console.log(err);
         $scope.recipes = [];
@@ -46,7 +60,94 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
         $ionicLoading.hide();
       }
   });
-  
+
+  $scope.active_filters = {};
+  $scope.active_filters['recipe_categories'] = [];
+  $scope.active_filters['total_time_categories'] = [];
+  $scope.active_filters['servings'] = 0;
+
+  $scope.selected_categories = function selected_categories() {
+    return filterFilter($scope.recipe_categories, {selected: true});
+  };
+
+  $scope.selected_total_times = function selected_total_times() {
+    return filterFilter($scope.total_time_categories, {selected: true});
+  };
+
+  $scope.selected_servings = 0;
+
+  $scope.$watch('recipe_categories|filter:{selected:true}', function (new_value) {
+    $scope.active_filters['recipe_categories'] = new_value.map(function (cat) {
+      return cat.id;
+    });
+  }, true);
+
+  $scope.$watch('total_time_categories|filter:{selected:true}', function (new_value) {
+    $scope.active_filters['total_time_categories'] = new_value;
+  }, true);
+
+  $scope.$watch('selected_servings', function (new_value) {
+    var n = parseInt(new_value);
+    if (isNaN(n)) {
+      $scope.active_filters['servings'] = 0;
+      $scope.selected_servings = '';
+    }
+    else {
+      $scope.active_filters['servings'] = n;
+      $scope.selected_servings = n;
+    }
+  }, true);
+
+  $scope.change_servings = function(add_value) {
+    var n = parseInt(add_value);
+    if (!isNaN(n)) {
+      $scope.active_filters['servings'] += n;
+      $scope.selected_servings = $scope.active_filters['servings'];
+    }
+  }
+
+  $scope.apply_filters = function() {
+    var filtered = filterFilter($scope.recipes, function(recipe, index, array) {
+      var test_recipe_category = false;
+      if ($scope.active_filters['recipe_categories'].length == 0)
+        test_recipe_category = true;
+      else
+        for (var i = 0; i < $scope.active_filters['recipe_categories'].length; i++)
+          if (recipe['category'] == $scope.active_filters['recipe_categories'][i]) {
+            test_recipe_category = true;
+            break;
+          }
+      if (!test_recipe_category)
+        return false;
+
+      var test_time = false;
+      if ($scope.active_filters['total_time_categories'].length == 0)
+        test_time = true;
+
+      for (var i = 0; i < $scope.active_filters['total_time_categories'].length; i++) {
+        var ct = $scope.active_filters['total_time_categories'][i];
+        if (recipe['total_time'] >= ct['min'] &&
+          recipe['total_time'] <= ct['max']) {
+          test_time = true;
+          break;
+        }
+      }
+      if (!test_time)
+        return false;
+
+      /* Needs changes on server side code to work
+      if ($scope.active_filters['servings']) {
+        for (ingredient in recipe['ingredients']) {
+          var qty = parseFloat(ingredient.qty);
+          if (!isNaN(qty))
+            recipe['qty'] = $scope.active_filters['servings']*qty/recipe['servings'];
+        }
+      }*/
+      return true;
+    }, true);
+    $scope.filtered_recipes = filtered;
+  }
+
   $scope.select_recipe = function(index) {
 	  $state.go('app.show_recipe', {obj : $scope.recipes[index]});
   }

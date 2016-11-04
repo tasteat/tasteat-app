@@ -6,17 +6,28 @@ angular.module('app')
 ])
 .factory('Recipe', function($http) {
  return {
-   getRecipes: function(searchData) {
-     var url = AppSettings.baseApiUrl + '/api/recipes';
-     return $http.get(url, {
-       params: searchData
-     })
-       .then(function (response) {
-         return response.data;
-       }, function (response) {
-           console.log('Got Error: ' + JSON.stringify(response));
-       })
-   }
+  getRecipes: function(searchData) {
+    var url = AppSettings.baseApiUrl + '/api/recipes';
+    return $http.get(url, {
+      params: searchData
+    })
+      .then(function (response) {
+        return response.data;
+      }, function (response) {
+          console.log('Got Error: ' + JSON.stringify(response));
+      })
+  },
+  getFilters: function(data) {
+    var url = AppSettings.baseApiUrl + '/api/filters';
+    return $http.get(url, {
+      params: data
+    })
+      .then(function (response) {
+        return response.data;
+      }, function (response) {
+          console.log('Got Error: ' + JSON.stringify(response));
+      })
+  }
  };
 })
 .factory('FormData', function() {

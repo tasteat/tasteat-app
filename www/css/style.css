@@ -31,19 +31,59 @@
 	margin-right: auto;
 }
 
+.search-results-tabs-container {
+	overflow: hidden;
+}
+
+.search-results-selected-tab {
+	background-color: #e5e5e5;
+}
+
+.search-results-unselected-tab {
+	background-color: #a0a0a0;
+}
+
+.search-results-recipe-tab {
+	float: left;
+	display: inline-block;
+	width: 50%;
+	text-align: center;
+}
+
+.search-results-filter-tab {
+	float: right;
+	display: inline-block;
+	width: 50%;
+	text-align: center;
+}
+
+.search-results-tab-title {
+	margin: auto;
+	padding: 5px;
+}
+
 .search-results-recipes-container {
 	/* background-color: #8d782a; */
-	background-color: #d0b862;
+	/* background-color: #d0b862; */
+	display: block;
+	background-color: #e5e5e5;
 	min-height: 82%;
 	margin-left: auto;
-	margin-right: auto;
+	margin-right: auto;	
 	align-content: center;
 }
 
+.search-results-menu-title-container {
+	margin-top: 100px;
+	background-color: blue;
+	width: 98%;
+}
+
 .search-results-menu-title {
+	margin-left: auto;
+	margin-right: auto;
 	height: 9%;
 	padding: 0px;
-	margin: 0px;
 }
 
 .search-results-recipes-box {
@@ -63,19 +103,31 @@
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	border: 1px solid black;
-	width: 70%;
+	width: 98%;
+	border: 2px solid white;
+	box-shadow: 3px 0px 5px -1px rgb(150,150,150), -3px 0px 5px -1px rgb(150,150,150), 0px 3px 5px rgb(150,150,150);
 	height: auto;	
 }
 
-.search-results-recipe-title {
-	text-align: center;
+.search-results-recipe-title-container {
+	background-color: white;
 	margin-left: auto;
 	margin-right: auto;
+	margin-bottom: 5px;
+	padding: 10px;
+	box-shadow: 3px 0px 5px -1px rgb(150,150,150), -3px 0px 5px -1px rgb(150,150,150), 0px 3px 5px rgb(150,150,150);
+	width:98%;
+}
+
+.search-results-recipe-title {
+	margin-left: 20px;
 	max-width: 95%;
 	max-height: 20px;
+	font-size: 14px;
 	overflow: hidden;
 }
+
+
 
 .show-recipe-main-container {
 	background-color: #f2f2f2;
