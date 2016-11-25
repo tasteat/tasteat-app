@@ -38,12 +38,12 @@
 
  <!-- Main Content -->
  <ion-side-menu-content>
-  <ion-nav-bar class="bar-positive">
-   <ion-nav-back-button>
+  <ion-nav-bar class="bar-positive view-header" align-title="center">
+   <ion-nav-back-button class="view-top-button">
    </ion-nav-back-button>
 
    <ion-nav-buttons side="left">
-     <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+     <button class="button button-icon button-clear ion-navicon view-top-button" menu-toggle="left">
      </button>
    </ion-nav-buttons>
  </ion-nav-bar>
@@ -69,116 +69,104 @@
 </script>
 
 <script id="templates/start.html" type="text/ng-template">
- <ion-view view-title="{{ 'START_TITLE' | translate }}">
-      <ion-content class="padding">
-		<img class="start-logo" src="img/Hum logo normal 2.jpeg"></img>
-        <div class="list list-inset">
-          <label class="item item-input">
-            <input type="text" placeholder="{{ 'INGREDIENTS_PLACEHOLDER' | translate }}" ng-model="data.searchString">
-        <button class="button button-positive icon ion-mic-a" on-hold="hold()" on-release="release()"></button>
-          </label>
-          <button class="button button-positive button-full" ng-click="search()" translate>FIND_BUTTON</button>
-        </div>
+ <ion-view>
+		<ion-nav-title class="view-title">{{ 'START_TITLE' | translate }}</ion-nav-title>
+		<ion-content class="padding">
+			<img class="start-logo" src="img/Hum logo normal 2.jpeg"></img>
+			<div>
+				<label class="item item-input start-textbox">
+					<input type="text" placeholder="{{ 'INGREDIENTS_PLACEHOLDER' | translate }}" ng-model="data.searchString">
+				</label>
+				<img class="start-mic-button" src="img/mic-icon.png" on-hold="hold()" on-release="release()"></button>
+				<button class="button button-positive button-full start-search-button" ng-click="search()" translate>FIND_BUTTON</button>
+			</div>
       </ion-content>
  </ion-view>
 </script>
 
 <script id="templates/search_results.html" type="text/ng-template">
-<ion-view view-title="{{ 'SEARCH_RESULT_TITLE' | translate }}">
+<ion-view>
+	<ion-nav-title class="view-title">{{ 'SEARCH_RESULT_TITLE' | translate }}</ion-nav-title>
 	<ion-content class="search-results-container">
-		<div class="top-bar-container">
-			<img class="top-left-logo" src="img/Hum logo normal 2.jpeg"></img>
-			<label class="item item-input top-right-label">
-				<input class="top-right-search-bar" type="text" placeholder="histórico da busca" ng-model="data.searchString">
-			</label>
-		</div>
 		<div class="search-results-tabs-container">
-			<div class="search-results-recipe-tab search-results-selected-tab">
+			<div ng-class="tab_classes.recipes_tab" ng-click="clicked_on_tab('recipes_tab')">
 				<p class="search-results-tab-title">
-					{{ 'RECIPES' | translate }} ({{ recipes.length }})
+					{{ 'RECIPES' | translate }}
 				</p>
 			</div>
-			<div class="search-results-filter-tab search-results-unselected-tab">
+			<div ng-class="tab_classes.filters_tab" ng-click="clicked_on_tab('filters_tab')">
 				<p class="search-results-tab-title">
 					{{ 'FILTERS' | translate }}
 				</p>
 			</div>
 		</div>
-		<div class="search-results-recipes-container">
-			<div class="search-results-recipes-box">
-				<div class="search-results-recipe" ng-repeat="recipe in filtered_recipes" ng-click=select_recipe($index)>
-					<div class="search-results-recipe-title-container">
-						<p class="search-results-recipe-title">{{ recipe.title }}</p>
-					</div>
-					<img class="seach-results-recipe-thumbnail" src="img/91055_original.jpg"></img>
-				</div>
+		<div class="search-results-recipes-container" ng-show="tab_classes.recipes_tab['search-results-selected-tab']">
+			<div class="search-results-recipe" ng-repeat="recipe in filtered_recipes" ng-click=select_recipe($index)>
+				<img class="search-results-recipe-thumbnail" src="img/91055_original.jpg"/>
+				<p class="search-results-recipe-title">{{ recipe.title }}</p>
 			</div>
 		</div>
-		<div class="search-results-filters-container">
+		<div class="search-results-filters-container" ng-show="tab_classes.filters_tab['search-results-selected-tab']">
 			<div class="search-results-filter">
 				<h3 class="search-results-filter-title">{{ 'RECIPE_CATEGORY_FILTER_TITLE' | translate }}</h3>
-				<label ng-repeat="cat in recipe_categories">
-					<input
-						class="search-results-filter-checkbox search-results-filter-recipe_category-input"
-						type="checkbox"
-						name="selected_categories"
-						value="{{ cat.name }}"
-						ng-model="cat.selected"/>{{ cat.name }}
-				</label>
+				<ion-checkbox ng-repeat="cat in recipe_categories"
+					class="search-results-filter-checkbox"
+					id="search-results-filter-{{ cat.name }}"
+					type="checkbox"
+					name="selected_categories"
+					value="{{ cat.name }}"
+					ng-model="cat.selected">
+					{{ cat.name }}
+				</ion-checkbox>
 			</div>
 			<div class="search-results-filter">
 				<h3 class="search-results-filter-title">{{ 'TOTAL_TIME_CATEGORY_FILTER_TITLE' | translate }}</h3>
-				<label ng-repeat="cat in total_time_categories">
-					<input
-						class="search-results-filter-checkbox search-results-filter-total_time_category-input"
-						type="checkbox"
-						name="selected_total_times"
-						value="{{ cat.name }}"
-						ng-model="cat.selected"/>{{ cat.name }}
-				</label>
+				<ion-checkbox ng-repeat="cat in total_time_categories"
+					class="search-results-filter-checkbox"
+					type="checkbox"
+					name="selected_total_times"
+					value="{{ cat.name }}"
+					ng-model="cat.selected">
+					{{ cat.name }}
+				</ion-checkbox>
 			</div>
-			<div class="search-results-filter">
-				<h3 class="search-results-filter-title">{{ 'SERVINGS_FILTER_TITLE' | translate }}</h3>				
-				<div class="search-results-filter-servings">
-					<button class="search-results-filter-plus-minus-button" type="button" ng-click="change_servings(-1)">-</button>
-					<input
-						class="search-results-filter-textbox search-results-filter-servings-input"
-						type="text"
-						value="{{ selected_servings }}"
-						ng-model="active_filters.servings"/>
-					<button class="search-results-filter-plus-minus-button" type="button" ng-click="change_servings(1)">+</button>
-				</div>				
-			</div>
-			<button class="button button-positive" ng-click="apply_filters()">APPLY_FILTERS</button>
+			<button class="button button-positive button-full search-results-filter-button" ng-click="apply_filters()">{{ 'APPLY_FILTERS' | translate }}</button>
 		</div>
 	</ion-content>
 </ion-view>
 </script>
 
 <script id="templates/show_recipe.html" type="text/ng-template">
-	<ion-view view-title="{{ 'VIEWING_RECIPE' | translate }}">
+	<ion-view>
+		<ion-nav-title class="view-title">{{ 'VIEWING_RECIPE' | translate }}</ion-nav-title>
 		<ion-content class="show-recipe-main-container">
-			<div class="top-bar-container">
-				<img class="top-left-logo" src="img/Hum logo normal 2.jpeg"></img>
-				<label class="item item-input top-right-label">
-					<input class="top-right-search-bar" type="text" placeholder="histórico da busca" ng-model="data.searchString">
-				</label>
-			</div>
 			<div class="show-recipe-container">
-				<h2 class="show-recipe-title">{{ recipe.title }}</h2>
 				<img class="show-recipe-image" src="img/91055_original.jpg"></img>
-				<div class="show-recipe-info-container">
-					<div class="show-recipe-info-left">
-						<p class="show-recipe-info-title">{{ 'total_time' | translate }}</p>
-						<p class="show-recipe-info-value">{{ recipe.total_time }}</p>
-					</div>
-					<div class="show-recipe-info-right">
-						<p class="show-recipe-info-title">{{ 'SERVINGS' | translate }}</p>
-						<p class="show-recipe-info-value">{{ recipe.servings }}</p>
+				<table class="show-recipe-info-container">
+					<tr>
+						<td class="show-recipe-title">{{ recipe.title }}</td>
+						<td class="show-recipe-time-circle-container">
+							<img class="show-recipe-time-circle" src="img/time-circle.png"/>
+							<p class="show-recipe-time-value">{{ recipe.total_time }}</p>
+							<p class="show-recipe-time-unit">min</p>
+						</td>
+					</tr>
+				</table>
 					</div>
 				</div>
-				<div class="show-recipe-section-container">
-					<h3 class="show-recipe-section-title">{{ 'INGREDIENTS' | translate }}</h3>
+				<div class="show-recipe-tabs-container">
+					<div ng-class="tab_classes.ingredients_tab" ng-click="clicked_on_tab('ingredients_tab')">
+						<p class="show-recipe-tab-title">
+							{{ 'INGREDIENTS_TAB_TITLE' | translate }}
+						</p>
+					</div>
+					<div ng-class="tab_classes.directions_tab" ng-click="clicked_on_tab('directions_tab')">
+						<p class="show-recipe-tab-title">
+							{{ 'DIRECTIONS_TAB_TITLE' | translate }}
+						</p>
+					</div>
+				</div>
+				<div class="show-recipe-section-container" ng-show="tab_classes.ingredients_tab['show-recipe-selected-tab']">
 					<div class="show-recipe-sub-section-container">
 						<ul class="show-recipe-item-list">
 							<li class="show-recipe-list-item" ng-repeat="ingredient in recipe.ingredients">
@@ -187,12 +175,11 @@
 						</ul>
 					</div>
 				</div>
-				<div class="show-recipe-section-container">
-					<h3 class="show-recipe-section-title">{{ 'DIRECTIONS' | translate }}</h3>
+				<div class="show-recipe-section-container" ng-show="tab_classes.directions_tab['show-recipe-selected-tab']">
 					<ul class="show-recipe-item-list">
-						<li class="show-recipe-list-item" ng-repeat="direction in recipe.directions">
-							{{ direction }}
-						</li>
+						<p class="show-recipe-list-item">
+							{{ recipe.directions }}
+						</p>
 					</ul>
 				</div>
 			</div>
