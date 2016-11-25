@@ -27,6 +27,17 @@ angular.module('app')
       }, function (response) {
           console.log('Got Error: ' + JSON.stringify(response));
       })
+  },
+  getRecipe: function(data) {
+    var url = AppSettings.baseApiUrl + '/api/get_recipe';
+    return $http.get(url, {
+      params: data
+    })
+      .then(function (response) {
+        return response.data;
+      }, function (response) {
+          console.log('Got Error: ' + JSON.stringify(response));
+      })
   }
  };
 })

@@ -27,26 +27,25 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
       searchData = {'lang': $translate.use(),
                     'fullText': $scope.data.searchString}
       FormData.updateForm(searchData);
-      $state.go('app.search_results');
+      $state.go('app.search_results', {lang : $translate.use()});
     }
 }])
 
-.controller('ResultsCtrl', function ($scope, filterFilter, FormData, Recipe, $ionicLoading, $state) {
+.controller('ResultsCtrl', function ($scope, filterFilter, FormData, Recipe, $stateParams, $ionicLoading, $state) {
   searchData = FormData.getForm();
-  $ionicLoading.show();
-  data = {'lang': 'pt_BR'};
-  console.log('data = ' + JSON.stringify(data));
+  data = {'lang': $stateParams.lang};
+  $ionicLoading.show(); 
   
   Recipe.getFilters(data)
-    .then(function(response) {
-      try {
+    .then(function(response) {      
+      try {        
         $scope.recipe_categories = response.recipe_categories;
         $scope.total_time_categories = response.total_time_categories;
-      } catch(err) {
+      } catch(err) {        
         console.log(err);
         $scope.recipe_categories = [];
       }
-  });
+  });  
   
   Recipe.getRecipes(searchData)
     .then(function(response) {
@@ -60,6 +59,21 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
         $ionicLoading.hide();
       }
   });
+
+  $scope.tab_classes = {};
+  $scope.tab_classes['recipes_tab'] = {
+    'search-results-tab': true,
+    'search-results-recipe-tab': true,
+    'search-results-selected-tab': true,
+    'search-results-unselected-tab': false
+  };
+
+  $scope.tab_classes['filters_tab'] = {
+    'search-results-tab': true,
+    'search-results-filter-tab': true,
+    'search-results-selected-tab': false,
+    'search-results-unselected-tab': true
+  };
 
   $scope.active_filters = {};
   $scope.active_filters['recipe_categories'] = [];
@@ -77,25 +91,14 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
   $scope.selected_servings = 0;
 
   $scope.$watch('recipe_categories|filter:{selected:true}', function (new_value) {
-    $scope.active_filters['recipe_categories'] = new_value.map(function (cat) {
-      return cat.id;
-    });
+    if (new_value)
+      $scope.active_filters['recipe_categories'] = new_value.map(function (cat) {
+        return cat.id;
+      });
   }, true);
 
   $scope.$watch('total_time_categories|filter:{selected:true}', function (new_value) {
     $scope.active_filters['total_time_categories'] = new_value;
-  }, true);
-
-  $scope.$watch('selected_servings', function (new_value) {
-    var n = parseInt(new_value);
-    if (isNaN(n)) {
-      $scope.active_filters['servings'] = 0;
-      $scope.selected_servings = '';
-    }
-    else {
-      $scope.active_filters['servings'] = n;
-      $scope.selected_servings = n;
-    }
   }, true);
 
   $scope.change_servings = function(add_value) {
@@ -106,7 +109,11 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
     }
   }
 
-  $scope.apply_filters = function() {
+  $scope.apply_filters = function() {    
+    $scope.tab_classes['filters_tab']['search-results-selected-tab'] = false;
+    $scope.tab_classes['filters_tab']['search-results-unselected-tab'] = true;
+    $scope.tab_classes['recipes_tab']['search-results-selected-tab'] = true;
+    $scope.tab_classes['recipes_tab']['search-results-unselected-tab'] = false;
     var filtered = filterFilter($scope.recipes, function(recipe, index, array) {
       var test_recipe_category = false;
       if ($scope.active_filters['recipe_categories'].length == 0)
@@ -135,26 +142,77 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
       if (!test_time)
         return false;
 
-      /* Needs changes on server side code to work
-      if ($scope.active_filters['servings']) {
-        for (ingredient in recipe['ingredients']) {
-          var qty = parseFloat(ingredient.qty);
-          if (!isNaN(qty))
-            recipe['qty'] = $scope.active_filters['servings']*qty/recipe['servings'];
-        }
-      }*/
       return true;
     }, true);
     $scope.filtered_recipes = filtered;
   }
 
+  $scope.clicked_on_tab = function(selected_tab) {
+    if ($scope.tab_classes[selected_tab]['search-results-selected-tab'])
+      return;
+    for (key in $scope.tab_classes) {
+      $scope.tab_classes[key]['search-results-selected-tab'] = false;
+      $scope.tab_classes[key]['search-results-unselected-tab'] = true;
+    }
+    $scope.tab_classes[selected_tab]['search-results-selected-tab'] = true;
+    $scope.tab_classes[selected_tab]['search-results-unselected-tab'] = false;
+    if (selected_tab == 'recipes_tab')
+      $scope.apply_filters();
+  };
+
   $scope.select_recipe = function(index) {
-	  $state.go('app.show_recipe', {obj : $scope.recipes[index]});
+	  $state.go('app.show_recipe', {
+      obj : $scope.recipes[index],
+      reqData : {
+        'lang' : $stateParams.lang,
+        'id' : $scope.recipes[index]['id']
+      }
+    });
   }
 })
 
-.controller('RecipeCtrl', function ($scope, $stateParams) {
+.controller('RecipeCtrl', function ($scope, $stateParams, $ionicLoading, Recipe) {
 	$scope.recipe = $stateParams.obj;
+  $scope.reqData = $stateParams.reqData;
+  $ionicLoading.show();
+
+  Recipe.getRecipe($scope.reqData)
+    .then(function(response) {
+      try {
+        $scope.recipe.ingredients = response.ingredients;
+        $scope.recipe.directions = response.directions;
+      } catch(err) {
+        console.log(err);
+      } finally {
+        $ionicLoading.hide();
+      }
+  });
+
+  $scope.tab_classes = {};
+  $scope.tab_classes['ingredients_tab'] = {
+    'show-recipe-tab': true,
+    'show-recipe-ingredients-tab': true,
+    'show-recipe-selected-tab': true,
+    'show-recipe-unselected-tab': false
+  };
+
+  $scope.tab_classes['directions_tab'] = {
+    'show-recipe-tab': true,
+    'show-recipe-directions-tab': true,
+    'show-recipe-selected-tab': false,
+    'show-recipe-unselected-tab': true
+  };
+
+  $scope.clicked_on_tab = function(selected_tab) {
+    if ($scope.tab_classes[selected_tab]['show-recipe-selected-tab'])
+      return;
+    for (key in $scope.tab_classes) {
+      $scope.tab_classes[key]['show-recipe-selected-tab'] = false;
+      $scope.tab_classes[key]['show-recipe-unselected-tab'] = true;
+    }
+    $scope.tab_classes[selected_tab]['show-recipe-selected-tab'] = true;
+    $scope.tab_classes[selected_tab]['show-recipe-unselected-tab'] = false;
+  };
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -175,6 +233,9 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
  })
  .state('app.search_results', {
      url: "/search_results",
+     params: {
+      lang: 'en_US'
+     },
      views: {
        'menuContent': {
          templateUrl: "templates/search_results.html",
@@ -185,7 +246,8 @@ angular.module('app', ['ionic', 'pascalprecht.translate'])
 .state('app.show_recipe', {
      url: "/show_recipe",
      params: {
-    	obj: null 
+    	obj: null,
+      reqData: null
      },
      views: {
        'menuContent': {
